@@ -3,6 +3,9 @@ uuid = "ff866fd8-f0f6-4982-8e4b-62b2bffab07c"
 authors = ["Paola-Serra"]
 version = "0.1.0"
 
+[deps]
+ParametricMachinesDemos = "bf2452f4-e92a-4e69-8f07-19c02af9b8cb"
+
 [compat]
 julia = "1"
 
