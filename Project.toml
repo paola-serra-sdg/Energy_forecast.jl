@@ -1,0 +1,13 @@
+name = "Energy_forecast"
+uuid = "ff866fd8-f0f6-4982-8e4b-62b2bffab07c"
+authors = ["Paola-Serra"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
