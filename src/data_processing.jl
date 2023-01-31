@@ -42,5 +42,6 @@ st = standardize(df)
 #build x and y as a shift of n days of x
 train = st[1:end-672,:,:]   #train all obs less one week
 test = st[673:end,:,:]      #test all obs shifted of one week
-
+#label for last week
+y = df[end-671:end]
 

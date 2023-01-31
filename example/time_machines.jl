@@ -61,6 +61,8 @@ end
 
 Flux.loadparams!(model, best_params);
 
+ŷ_PM = (model(X_test)[:].*st).+m
+
 # Visualization
 plot(epochs, loss_on_train, lab="Training", c=:blue, lw=2, ylims = (0,5));
 plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,5));
@@ -69,10 +71,20 @@ yaxis!("Loss");
 xaxis!("Training epoch");
 savefig("recurrentPM_loss.png");
 
+
+
+
 #plotting y predicted vs y true
-plot(df[end-671:end],  lab= "y true",lw=2)
-plot!(((X_test.*st).+m)[:], lab= "y hat PM", lw=2)
+plot( y ,  lab= "y",lw=2)
+plot!( ŷ_PM , lab= "ŷ PM", lw=2) 
+plot!( ŷ_RNN , lab= "ŷ RNN", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
 savefig("energy_forecast.png");
+
+maximum(ŷ_RNN )
+minimum(ŷ_RNN)
+
+maximum(ŷ_PM )
+minimum(ŷ_PM)

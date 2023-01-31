@@ -11,18 +11,18 @@ test_data = DataLoader((x_test, y_test); batchsize = 1)
 
 
 #------RNN-------------
-model = Chain(RNN(32925, 256),Dense(256, 4,relu), Dense(4, 672,relu)) |> f64;
+model_RNN = Chain(RNN(32925, 256),Dense(256, 4,relu), Dense(4, 672,relu)) |> f64;
 
 optimiser = ADAM(0.01);
 
-params = Flux.params(model);
+params = Flux.params(model_RNN);
 
-loss(x, y) = Flux.Losses.mse(model(x), y)
+loss(x, y) = Flux.Losses.mse(model_RNN(x), y)
 
 epochs = Int64[]
 loss_on_train = Float64[]
 loss_on_test = Float64[]
-best_params = Float32[]
+best_params_RNN = Float32[]
 
 
 for epoch in 1:100
@@ -37,17 +37,19 @@ for epoch in 1:100
 
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
-            best_params = params
+            best_params_RNN = params
         end
     end
 end
 
 # Extract and add new trained parameters
-if isempty(best_params)
-    best_params = params
+if isempty(best_params_RNN)
+    best_params_RNN = params
 end
 
-Flux.loadparams!(model, best_params);
+Flux.loadparams!(model_RNN, best_params_RNN);
+
+ŷ_RNN = (model_RNN(x_test)[:].*st).+m
 
 # Visualization
 plot(epochs, loss_on_train, lab="Training", c=:blue, lw=2);
