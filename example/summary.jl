@@ -2,18 +2,23 @@ using Pandas
 using PlotlyJS
 using Dates
 using PyPlot
+using TimeSeries
+using StatsPlots
 
-dataf = Pandas.DataFrame(df)
-Pandas.describe(dataf)
-
+dataf1 = Pandas.DataFrame(df)
+d = Pandas.describe(dataf1)
+d
 
 timestamp = convert(Array{DateTime},timestamp)
 
+
+Plots.PlotlyJSBackend()
+#plot active power demand for  1st user 
 PlotlyJS.plot(
-    timestamp, df,
+    timestamp, df,alpha = 0.4,lw = 10,
     Layout(
-        title="Time Series with Range Slider and Selectors",
-        xaxis=attr(
+        title="Active Power Demand for user 1081057",
+        xaxis=attr( 
             rangeslider_visible=true,
             rangeselector=attr(
                 buttons=[
@@ -30,3 +35,51 @@ PlotlyJS.plot(
 
 #to be continued
 #add here some other nice plots...
+
+using Plots
+
+
+trace1 = PlotlyJS.box(;y = df)
+PlotlyJS.plot(trace1,
+    Layout(
+        title="Box Plot with Range Slider and Selectors",
+        xaxis=attr(
+            rangeslider_visible=true)
+))
+
+user = Vector{Any}(undef, numfiles)
+for i in 1:numfiles
+    user[i] = files[i][end-11:end-5] 
+end
+
+
+
+
+data = GenericTrace[]
+for i in 1:50
+    trace = PlotlyJS.box(;y=df_st[i],
+                 name=user[i])
+    push!(data, trace)
+end
+
+t = "Box Plot for each user"
+layout = Layout(;title=t,xaxis=attr(attr(rangeslider_visible=true),
+                    #rangeselector=attr(
+                                    #buttons=[
+                                       # attr(count=1, label="1d", step="day", stepmode="backward")],
+                    
+                     yaxis=attr(;zeroline=false, gridcolor="white"),
+                     paper_bgcolor="rgb(233, 233, 233)",
+                     plot_bgcolor="rgb(233, 233, 233)"))#,
+                     #showlegend=true))
+
+PlotlyJS.plot(data, layout)
+
+
+
+
+
+
+
+
+

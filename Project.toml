@@ -4,7 +4,16 @@ authors = ["Paola-Serra"]
 version = "0.1.0"
 
 [deps]
+CatViews = "81a5f4ea-a946-549a-aa7e-2a7f63a27d31"
+FluxOptTools = "ca11d760-9bce-11e9-0b7e-4f72fcadb4f9"
+Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004"
+HypothesisTests = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 ParametricMachinesDemos = "bf2452f4-e92a-4e69-8f07-19c02af9b8cb"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
+TimeSeries = "9e3dc215-6440-5c97-bce1-76c03772f85e"
+Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 julia = "1"
