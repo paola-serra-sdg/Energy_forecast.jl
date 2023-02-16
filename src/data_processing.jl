@@ -18,13 +18,13 @@ file = files[1]
 tempdf = XLSX.readxlsx(file)  
 
 sheet = tempdf[" ACTIVA Y REACTIVA"]
-s = string(size(sheet[:],1))
-df = sheet["F4:F"*s]
-timestamp = sheet["A4:A"*s]
+s_single = string(size(sheet[:],1))
+df_single = sheet["F4:F"*s_single]
+timestamp = sheet["A4:A"*s_single]
 
 #transform from Any in Float 
-df = string.(df)
-df = parse.(Float64, df)
+df_single = string.(df_single)
+df_single = parse.(Float64, df_single)
 #df = Vector{Float64}(vec(df))
 
 #standardize the data 
@@ -34,13 +34,51 @@ function standardize(data::Array)
     st_x = (data.-m)./s
     return st_x
 end
-m1 = mean(df)
-s1 = std(df)
-st = standardize(df)
+m1 = mean(df_single)
+s1 = std(df_single)
+st = standardize(df_single)
 
 #build x and y as a shift of n days of x
-train = st[1:end-672,:,:]   #train all obs less one week
-test = st[673:end,:,:]      #test all obs shifted of one week
-#label for last week
-y_st = test[end-671:end]
+#splitting train and test
+week = 43
+week_length = 4 * 24 * 7
+start_week_prediction = week * week_length  #44*672
+end_week_prediction = start_week_prediction + week_length 
+train_range = 1:start_week_prediction  # arriva asll'inizio 44 esima settimana
+test_range= start_week_prediction+1 : end_week_prediction
+
+672*52
+
+#splitting in train and test
+
+X_train = st[1:end-672,:,:]
+Y_train = st[673:end,:,:]
+
+X_test = X[end-671:end,:,:]
+Y_test = Y[end-671:end,:,:]
+# X = st[1:end-week_length,:,:]  
+# Y = st[week_length+1:end,:,:]
+
+# X_train = X[1:start_week_prediction,:,:]# inizio 43
+# Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
+
+# X_test = X[test_range,:,:] #43
+# Y_test = Y[test_range,:,:] #44
+#IL TEST
+
+
+
+# X = st[train_range,:,:]
+# Y = st[train_range,:,:]
+
+
+# X_test = st[test_range,:,:]
+# Y_test = st[test_range,:,:]
+
+train_data_single = DataLoader((X_train, Y_train) ; batchsize = 1)
+test_data_single = DataLoader((X_test, Y_test); batchsize = 1)
+
+
+#Y ground truth for week 44
+y_st = Y[test_range]
 y = (y_st.*s1).+m1

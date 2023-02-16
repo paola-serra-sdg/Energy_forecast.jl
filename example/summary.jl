@@ -39,7 +39,7 @@ PlotlyJS.plot(
 using Plots
 
 
-trace1 = PlotlyJS.box(;y = df)
+trace1 = PlotlyJS.box(;y = st_)
 PlotlyJS.plot(trace1,
     Layout(
         title="Box Plot with Range Slider and Selectors",

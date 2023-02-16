@@ -1,18 +1,16 @@
 using ParametricMachinesDemos
-using Optim
-using FluxOptTools 
 
 
 #splitting in train and test
-X = st[1:end-672,:,:]
-Y = st[673:end,:,:]
+#X = st[1:end-672,:,:]
+#Y = st[673:end,:,:]
 
-X_test = X[end-671:end,:,:]
-Y_test = Y[end-671:end,:,:]
+#X_test = X[end-671:end,:,:]
+#Y_test = Y[end-671:end,:,:]
 #IL TEST
 #ultimi 672 della prediction e di Y NORMALE calcola loss on test 
 
-data = DataLoader((X, Y) ; batchsize = 1)
+#data = DataLoader((X, Y) ; batchsize = 1)
 
 
 dimensions = [1, 4 , 4 , 4];#, 16, 32];
@@ -20,82 +18,66 @@ dimensions = [1, 4 , 4 , 4];#, 16, 32];
 
 machine = RecurMachine(dimensions, sigmoid; pad = 24*4, timeblock = 4*24*2)
 
-model_PM = Flux.Chain(machine, Conv((1,), sum(dimensions) => 1)) |> f64
+model_PM_adam = Flux.Chain(machine, Conv((1,), sum(dimensions) => 1)) |> f64
 
-params_PM = Flux.params(model_PM);
-opt = ADAM(0.1);
+params_PM_adam = Flux.params(model_PM_adam);
 
+opt = ADAM(0.01);
 
-best_paras = best_parameters( "LBFGS",model,2, X, Y, X_test,Y_test)
+#best_paras = best_parameters( "LBFGS",model,2, X, Y, X_test,Y_test)
 
-
-
-
-loss(x, y) = Flux.Losses.mse(model_PM(x), y)
-# Loss function
-loss() = Flux.Losses.mse(model_PM(X), Y);
-
-lossfun, gradfun, fg!, p0 = optfuns(loss, params)
-res_PM = Optim.optimize(Optim.only_fg!(fg!), p0, Optim.Options(iterations=10, store_trace=true))
-best_params_PM = res_PM.minimizer
-
-
-copy!(params_PM, best_params_PM)
-
-Flux.loadparams!(model, params);
-
+loss(x, y) = Flux.Losses.mse(model_PM_adam(x), y)
 
 
 epochs = Int64[]
-loss_on_train = Float64[]
-loss_on_test = Float64[]
-best_params_PM = Float32[]
+loss_on_train_PM_adam = Float64[]
+loss_on_test_PM_adam = Float64[]
+best_params_PM_adam = Float32[]
 
 
-
-for epoch in 1:200
+for epoch in 1:400
     # Train
-    Flux.train!(loss, params_PM, data,opt)
+    Flux.train!(loss, params_PM_adam, train_data_single, opt)
 
     # Saving loss
     push!(epochs, epoch)
-    push!(loss_on_train, loss(X, Y))
-    push!(loss_on_test,  loss(X_test, Y_test))
+    push!(loss_on_train_PM_adam, loss(X_train, Y_train))
+    push!(loss_on_test_PM_adam, loss(X_test, Y_test))
     @show epoch
-    @show loss(X, Y)
+    @show loss(X_train, Y_train)
     @show loss(X_test, Y_test)
-
-    # Saving the best parameters
+    
+  #  Saving the best parameters
     if epoch > 1
-        if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
-        #if is_best(loss_on_train[epoch-1], loss_on_train[epoch])
-            best_params_PM = params_PM
+        if is_best(loss_on_test_PM_adam[epoch-1], loss_on_test_PM_adam[epoch])
+            best_params_PM_adam = params_PM_adam
         end
     end
 end
 
 
 # Extract and add new trained parameters
-if isempty(best_params_PM)
-    best_params_PM = params_PM
+if isempty(best_params_PM_adam)
+    best_params_PM_adam = params_PM_adam
 end
 
 
-Flux.loadparams!(model_PM, best_params_PM);
-#copy flattened optimized params 
+Flux.loadparams!(model_PM_adam, best_params_PM_adam);
 
 
-ŷ_PM_st = model_PM(X_test)[:]
-ŷ_PM = (model_PM(X_test)[:].*s1).+m1
+
+ŷ_PM_st = model_PM_adam(X_test)[:]
+ŷ_PM = (model_PM_adam(X_test)[:].*s1).+m1
 
 
 # Visualization
-plot(epochs, loss_on_train, lab="Training", c=:blue, lw=2, ylims = (0,5));
-plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,5));
+plot(epochs, loss_on_train_PM_adam, lab="Training", c=:blue, lw=2, ylims = (0,2));
+plot!(epochs, loss_on_test_PM_adam, lab="Test", c=:green, lw=2, ylims = (0,2));
 title!("Recurrent parametric machine architecture");
 yaxis!("Loss");
 xaxis!("Training epoch");
-savefig("recurrentPM_loss.png");
+savefig("recurrentPM_loss_adam.png");
+
 
 
 
@@ -103,7 +85,7 @@ savefig("recurrentPM_loss.png");
 #plotting y predicted vs y true standaridized
 plot( y_st , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM_st ,alpha = 0.4, lab= "ŷ PM", lw=2) 
-plot!( ŷ_RNN_st , alpha = 0.4, lab= "ŷ CNN", lw=2)
+plot!( ŷ_CNN_st , alpha = 0.4, lab= "ŷ CNN", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");

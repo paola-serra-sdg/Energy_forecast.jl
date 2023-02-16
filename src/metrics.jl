@@ -7,21 +7,28 @@ end
 #USE MEAN ABSOLUTE ERROR 
 
 #train
-error_train_PM  = Flux.Losses.mae(model(X) , test )
-error_test_RNN = Flux.Losses.mae(model_RNN(x_train) , y_train)
+error_train_PM  = Flux.Losses.mae(model_PM_adam(X_train) , Y_train)
+error_test_CNN_LBFGS = Flux.Losses.mae(model_CNN(X_test) , Y_test)
 #test
-error_test_PM  = Flux.Losses.mae( ŷ_PM_st , y )
-error_test_RNN = Flux.Losses.mae( ŷ_RNN_st , y )
+error_test_PM_adam  = Flux.Losses.mae( ŷ_PM_st , y_st )
+error_test_CNN_adam = Flux.Losses.mae( ŷ_CNN_st , y_st )
 
 error_test_PM = Array{Any}(undef, numfiles)
 error_test_CNN = Array{Any}(undef, numfiles)
 #error test with one user trained
 for i in 1:numfiles
-    error_test_PM[i] = Flux.Losses.mae( ŷ_PM[i] , y[i] )
-    error_test_CNN[i] = Flux.Losses.mae( ŷ_CNN[i] , y[i] )
+    error_test_PM[i] = Flux.Losses.mae( ŷ_PM_multi[i] , y_multi[i] )
+    error_test_CNN[i] = Flux.Losses.mae( ŷ_CNN_multi[i] , y_multi[i] )
 end
 
 #plotting error_test (the first one is the one used for training)
+bar( x = user[1:20], error_test_PM[1:20] , alpha = 0.4,  lab= "error_test_PM", lw=2 ,xrotation=45 )
+bar!(x= user[1:20], error_test_CNN[1:20] ,alpha = 0.4, lab= "error_test_CNN", lw=2, xrotation=45 ) 
+title!("Error on test PM vs CNN");
+yaxis!("error");
+xaxis!("user");
+savefig("error_test_1user.png");
+
 plot( error_test_PM , alpha = 0.4,  lab= "error_test_PM", lw=2)
 plot!( error_test_CNN ,alpha = 0.4, lab= "error_test_CNN", lw=2) 
 title!("Error on test PM vs CNN");
@@ -29,10 +36,19 @@ yaxis!("error");
 xaxis!("user");
 savefig("error_test_1user.png");
 
+
+
+
+
+
+
+
 maximum(error_test_CNN)
 maximum(error_test_PM)
 minimum(error_test_CNN)
 minimum(error_test_PM)
+
+
 
 
 

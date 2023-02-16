@@ -2,6 +2,7 @@
 #do not check thic code
 #read all files
 
+
 numfiles = numfiles-2
 #initialize vector 
 tempdfs = Vector{Any}(undef, numfiles)
@@ -31,6 +32,11 @@ for i in 1:numfiles #-2
     println(i, " done")
 end
 
+
+user = Vector{Any}(undef, numfiles)
+for i in 1:numfiles
+    user[i] = files[i][end-11:end-5] 
+end
 #remove file with size less than the end of the 44th week
 
 count_removed_files = 0
@@ -48,25 +54,18 @@ for i in 1:numfiles
 end
 println("Number of files removed: ", count_removed_files)
 #update numfiles 
-numfiles = numfiles -  count_removed_files #-1
+
+numfiles = numfiles -  count_removed_files 
 user = user[1:numfiles]
 df_st = df_st[1:numfiles,:,:]
 
 
 week = 44
-week_length = 4 * 24 * 7
-start_week_prediction = week * week_length  #44*672
-end_week_prediction = start_week_prediction + week_length 
-  #  input = Float32.(processed_data[1:end-week_length, :, :])
-  #  output = Float32.(processed_data[week_length+1:end, :, :])
-train_range = 1:start_week_prediction  # arriva asll'inizio 44 esima settimana
-test_range= start_week_prediction+1 : end_week_prediction
-end_week_prediction-start_week_prediction
 
 
 for i in 1:numfiles
     x_train[i] = df_st[i][1:start_week_prediction, :, :]
-    y_train[i] = df_st[i][1:start_week_prediction, :, :]
+    y_train[i] = df_st[i][week_length:end, :, :]
     println("train of ",i," done")
     x_test[i] = df_st[i][start_week_prediction+1:end_week_prediction,:,:]
     y_test[i] = df_st[i][start_week_prediction+1:end_week_prediction,:,:]
@@ -76,14 +75,20 @@ for i in 1:numfiles
     println("wrap of ",i," done")
 end
 
-
-ŷ_PM = Vector{Any}(undef, numfiles)
-ŷ_CNN = Vector{Any}(undef, numfiles)
-y = Vector{Any}(undef, numfiles)
 for i in 1:numfiles
-    ŷ_PM[i] = model_PM(y_test[i])[:]
-    ŷ_CNN[i] = model_CNN(y_test[i])[:]
-    y[i] = df_st[i][start_week_prediction+1:end_week_prediction][:] #ground truth
+    y_test[i] = df_st[i][start_week_prediction+1:end_week_prediction,:,:]
+    println("y_test of ",i," done")
+end
+
+
+ŷ_PM_multi = Vector{Any}(undef, numfiles)
+ŷ_CNN_multi = Vector{Any}(undef, numfiles)
+y_multi = Vector{Any}(undef, numfiles)
+
+for i in 1:numfiles
+    ŷ_PM_multi[i] = model_PM_adam(y_test[i])[:]
+    ŷ_CNN_multi[i] = model_CNN_adam(y_test[i])[:]
+    y_multi[i] = y_test[i][:] #ground truth
 end
 
 
@@ -116,52 +121,76 @@ for i in 1:numfiles
 
     params_CNN_multiple[i] = Flux.params(model_CNN_multi[i]);
 end
-            
 
+losses = Vector{Any}(undef, numfiles)
+
+losses = (x, y) -> Flux.Losses.mse(model_CNN_multi[i](x), y)
 
 optimiser = ADAM(0.01);
+
 
 loss_multi(i,x,y) = Flux.Losses.mse(model_CNN_multi[i](x), y)
 
 
 
+
 #for loop questo
 epochs = Int64
-loss_on_train = Vector{Any}(undef, numfiles)
-loss_on_test = Vector{Any}(undef, numfiles)
+epochs = 200
+loss_on_train = Array{Float64}(undef, numfiles, epochs)
+loss_on_test = Array{Float64}(undef, numfiles, epochs)
 best_params_CNN_multi = Vector{Any}(undef, numfiles)
 
-epochs
+loss_on_train[1,2]
+
+
+for i in 1:numfiles 
+    for epoch in 1:100
+        Flux.train!(Flux.Losses.mse(model_CNN_multi[i](x), y), params_CNN_multiple[i],train_data[i], optimiser) 
+        end
+    end
+end
+
 
 for i in 1:numfiles 
     println("user ",i, " has started the training")
     for epoch in 1:2
         println("enter in epoch")
        # Flux.train!(loss_multi, params_CNN_multiple[i], train_data[i], optimiser)
-        push!(epochs[i], epoch)
+        
     end
 end
+epochs = 
+v_epochs = Int64[]
+for epoch in 1:200
+    push!(v_epochs, epoch)
+end
+
+
 for i in 1:numfiles 
     println("user ",i, " has started the training")
+    
     for epoch in 1:200
         println("enter in epoch")
-        Flux.train!(loss_multi, params_CNN_multiple[i], train_data[i], optimiser)
-        push!(epochs, epoch)
-        push!(loss_on_train[i], loss(i,x_train[i], y_train[i]))
-        push!(loss_on_test[i],  loss(i,x_test[i], y_test[i]))
+        Flux.train!((x, y) -> Flux.Losses.mse(model_CNN_multi[i](x), y), params_CNN_multiple[i], train_data[i], optimiser)
+        println("training")
+        #push!(epochs, epoch)
+        #loss_on_train[i][epoch], loss_multi(i,x_train[i], y_train[i]))
+       # push!(loss_on_test[i][epoch],  loss_multi(i,x_test[i], y_test[i]))
 
-        @show epoch, i
-        @show loss(i,x_train[i], y_train[i])
-        @show loss(i,x_test[i], y_test[i])
+        @show epoch
+        @show loss_multi(i,x_train[i], y_train[i])
+        @show loss_multi(i,x_test[i], y_test[i])
 
         if epoch > 1
-            if is_best(loss_on_test[i][epoch-1], loss_on_test[i][epoch])
+            if is_best(loss_on_test[i,epoch-1], loss_on_test[i,epoch])
                 best_params_CNN_multi[i] = params_CNN_multiple[i]
             end
         end
-    end
-
+     end
     println("user ",i, "has finished the training")
+    #i = i+1
+    println("user ",i, "will start the training")
 end
 
 for i in 1:numfiles
@@ -172,3 +201,13 @@ for i in 1:numfiles
 
     Flux.loadparams!(model_CNN[i], best_params_CNN_multi[i]);
 end
+
+
+    plot(v_epochs, loss_on_train[20,:], lab="Training", c=:blue, lw=2);
+    plot!(v_epochs, loss_on_test[20,:], lab="Test", c=:red, lw=2);
+    title!("Recurrent architecture");
+    yaxis!("Loss");
+    xaxis!("Training epoch");
+    savefig("r");
+
+savefig("recurrent_loss");
