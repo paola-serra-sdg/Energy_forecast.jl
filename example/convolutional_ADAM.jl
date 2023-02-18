@@ -1,25 +1,18 @@
 #------CNN   with ADAM optimizer-------------
-
+using Random
 N = 24 * 4
-model_CNN_adam = Chain(Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0)))    #|> f64;
+
+Random.seed!(25)
+model_CNN_adam = Chain(Conv((N,),1 => 4, pad = (N-1,0),sigmoid),
+            Conv((N,),4 => 4, pad = (N-1,0),sigmoid),
+            Conv((N,),4 => 4, pad = (N-1,0),sigmoid),
+            Conv((N,),4 => 1, pad = (N-1,0)))     |> f64;
             #Dense(32925, 672)) 
 
             
 
 
-optimiser = ADAM(0.1);
+optimiser = ADAM(0.05);
 #0.05 ok
 params_CNN_adam = Flux.params(model_CNN_adam);
 
@@ -32,7 +25,7 @@ loss_on_test_adam = Float64[]
 best_params_CNN_adam = Float32[]
 
 
-for epoch in 1:400
+for epoch in 1:10
     Flux.train!(loss, params_CNN_adam, train_data_single, optimiser)
     push!(epochs, epoch)
     push!(loss_on_train_adam, loss(X_train, Y_train))
@@ -69,3 +62,9 @@ yaxis!("Loss");
 xaxis!("Training epoch");
 savefig("convolutional_loss_ADAM");
 
+plot( y , alpha = 0.4,  lab= "y",lw=2)
+plot!( ŷ_CNN ,alpha = 0.4, lab= "ŷ CNN", lw=2) 
+title!("Predicted vs True");
+yaxis!("Energy demand");
+xaxis!("Time");
+savefig("energy_forecast_Conv1.pdf");

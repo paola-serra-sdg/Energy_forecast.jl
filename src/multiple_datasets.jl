@@ -3,7 +3,7 @@
 #read all files
 
 
-numfiles = numfiles-2
+numfiles = 254
 #initialize vector 
 tempdfs = Vector{Any}(undef, numfiles)
 dfs = Vector{Any}(undef, numfiles)
@@ -20,7 +20,7 @@ y_test = Vector{Any}(undef, numfiles)
 train_data = Vector{Any}(undef, numfiles)
 test_data = Vector{Any}(undef, numfiles)
 
-for i in 1:numfiles #-2
+for i in 1:numfiles
     dfs[i]= XLSX.readxlsx(files[i])  
     sheet[i] = dfs[i][" ACTIVA Y REACTIVA"]
     s[i] = string(size(sheet[i][:],1))
@@ -59,6 +59,18 @@ numfiles = numfiles -  count_removed_files
 user = user[1:numfiles]
 df_st = df_st[1:numfiles,:,:]
 
+maxi = Float64[]
+max_st = Float64[]
+mini = Float64[]
+min_st = Float64[]
+
+for i in 1:numfiles
+    push!(maxi, maximum(df[i]))
+    push!(mini, minimum(df[i]))
+    push!(max_st, maximum(df_st[i]))
+    push!(min_st, minimum(df_st[i]))
+end
+
 
 week = 44
 
@@ -76,7 +88,7 @@ for i in 1:numfiles
 end
 
 for i in 1:numfiles
-    y_test[i] = df_st[i][start_week_prediction+1:end_week_prediction,:,:]
+    y_test[i] = df_st[i][test_range,:,:]
     println("y_test of ",i," done")
 end
 

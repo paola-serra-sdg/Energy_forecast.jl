@@ -5,7 +5,7 @@ using PyPlot
 using TimeSeries
 using StatsPlots
 
-dataf1 = Pandas.DataFrame(df)
+dataf1 = Pandas.DataFrame(df_single)
 d = Pandas.describe(dataf1)
 d
 
@@ -14,10 +14,10 @@ timestamp = convert(Array{DateTime},timestamp)
 
 Plots.PlotlyJSBackend()
 #plot active power demand for  1st user 
-PlotlyJS.plot(
-    timestamp, df,alpha = 0.4,lw = 10,
+savefig( = PlotlyJS.plot(
+    timestamp, df_single,alpha = 0.4,lw = 10,
     Layout(
-        title="Active Power Demand for user 1081057",
+        title="Active Power Demand for user 1358568",
         xaxis=attr( 
             rangeslider_visible=true,
             rangeselector=attr(
@@ -31,7 +31,12 @@ PlotlyJS.plot(
             )
         )
     )
-)
+),"test.png")
+
+
+savefig(
+    p::timeseries_plot, fn::timeseries;)
+
 
 #to be continued
 #add here some other nice plots...
@@ -57,7 +62,7 @@ end
 
 data = GenericTrace[]
 for i in 1:50
-    trace = PlotlyJS.box(;y=df_st[i],
+    trace = PlotlyJS.box(;y= df[i],
                  name=user[i])
     push!(data, trace)
 end
@@ -74,11 +79,6 @@ layout = Layout(;title=t,xaxis=attr(attr(rangeslider_visible=true),
                      #showlegend=true))
 
 PlotlyJS.plot(data, layout)
-
-
-
-
-
 
 
 

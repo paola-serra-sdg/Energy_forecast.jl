@@ -35,7 +35,7 @@ loss_on_test_PM_adam = Float64[]
 best_params_PM_adam = Float32[]
 
 
-for epoch in 1:400
+for epoch in 1:10
     # Train
     Flux.train!(loss, params_PM_adam, train_data_single, opt)
 

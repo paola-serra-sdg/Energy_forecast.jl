@@ -12,7 +12,8 @@ numfiles =length(dirs)
 files = glob("*.xlsx", ("C:\\Users\\serrap\\Downloads\\Dati_Tesi"))
 
 #take only one dataset, in this case the first one
-file = files[1]
+file = files[87]
+
 
 #store only  active demand column
 tempdf = XLSX.readxlsx(file)  
@@ -34,7 +35,7 @@ function standardize(data::Array)
     st_x = (data.-m)./s
     return st_x
 end
-m1 = mean(df_single)
+m1 = mean(df_single[train_range])
 s1 = std(df_single)
 st = standardize(df_single)
 
@@ -54,16 +55,16 @@ test_range= start_week_prediction+1 : end_week_prediction
 X_train = st[1:end-672,:,:]
 Y_train = st[673:end,:,:]
 
-X_test = X[end-671:end,:,:]
-Y_test = Y[end-671:end,:,:]
+#X_test = X_train[end-671:end,:,:]
+#_test = Y_train[end-671:end,:,:]
 # X = st[1:end-week_length,:,:]  
 # Y = st[week_length+1:end,:,:]
 
 # X_train = X[1:start_week_prediction,:,:]# inizio 43
 # Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
 
-# X_test = X[test_range,:,:] #43
-# Y_test = Y[test_range,:,:] #44
+X_test = X_train[test_range,:,:] #43
+Y_test = Y_train[test_range,:,:] #44
 #IL TEST
 
 
@@ -80,5 +81,5 @@ test_data_single = DataLoader((X_test, Y_test); batchsize = 1)
 
 
 #Y ground truth for week 44
-y_st = Y[test_range]
+y_st = Y_train[test_range]
 y = (y_st.*s1).+m1

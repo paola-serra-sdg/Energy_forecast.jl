@@ -3,19 +3,10 @@ using FluxOptTools
 using Optim
 
 N = 24 * 4
-model_CNN_lbfgs = Chain(Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-            Conv((N,),1 => 1, pad = (N-1,0)),
-            Conv((N,),1 => 1, pad = (N-1,0)),
-            Conv((N,),1 => 1, pad = (N-1,0)),
-            Conv((N,),1 => 1, pad = (N-1,0)),
-            Conv((N,),1 => 1, pad = (N-1,0)))    |> f64;
+model_CNN_lbfgs = Chain(Conv((N,),1 => 4, pad = (N-1,0),sigmoid),
+                Conv((N,),4 => 4, pad = (N-1,0),sigmoid),
+                Conv((N,),4 => 4, pad = (N-1,0),sigmoid),
+                 Conv((N,),4 => 1, pad = (N-1,0)))   |> f64;  
             #Dense(32925, 672)) 
 
             
