@@ -24,7 +24,7 @@ loss_on_test_CNN_param_adj = Float64[]
 best_params_CNN_param_adj= Float32[]
 
 
-for epoch in 1:10
+for epoch in 1:100
     Flux.train!(loss, params_CNN_param_adj, train_data_single, optimiser)
     push!(epochs, epoch)
     push!(loss_on_train_CNN_param_adj, loss(X_train, Y_train))
@@ -59,7 +59,7 @@ plot!(epochs, loss_on_test_CNN_param_adj, lab="Test", c=:red, lw=2);
 title!("Convolutional architecture with ADAM optimizer");
 yaxis!("Loss");
 xaxis!("Training epoch");
-savefig("convolutional2_loss_ADAM");
+savefig("convolutional2_loss_ADAM.pdf");
 
 
 
@@ -68,4 +68,4 @@ plot!( ŷ_CNN_2 ,alpha = 0.4, lab= "ŷ CNN_2", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
-savefig("energy_forecast_cONV2.pdf");
+savefig("energy_forecast_conv2.pdf");

@@ -25,7 +25,7 @@ params_PM_lbfgs = Flux.params(model_PM_lbfgs);
 loss() = Flux.Losses.mse(model_PM_lbfgs(X_train), Y_train);
 
 lossfun, gradfun, fg!, p0 = optfuns(loss, params_PM_lbfgs)
-res_PM_lbfgs = Optim.optimize(Optim.only_fg!(fg!), p0, Optim.Options(iterations=10, store_trace=true))
+res_PM_lbfgs = Optim.optimize(Optim.only_fg!(fg!), p0, Optim.Options(iterations=100, store_trace=true))
 best_params_PM_lbfgs  = res_PM_lbfgs.minimizer
 
 
@@ -42,7 +42,8 @@ ŷ_PM_lbfgs = (model_PM_lbfgs(X_test)[:].*s1).+m1
 
 plot( y , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM_lbfgs ,alpha = 0.4, lab= "ŷ PM", lw=2) 
-#plot!( ŷ_CNN_lbfgs, alpha = 0.4, lab= "ŷ CNN", lw=2)
+plot!( ŷ_CNN_lbfgs, alpha = 0.4, lab= "ŷ CNN", lw=2)
+plot!( ŷ_CNN2_lbfgs, alpha = 0.4, lab= "ŷ CNN 2", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");

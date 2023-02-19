@@ -35,7 +35,7 @@ loss_on_test_PM_adam = Float64[]
 best_params_PM_adam = Float32[]
 
 
-for epoch in 1:10
+for epoch in 1:100
     # Train
     Flux.train!(loss, params_PM_adam, train_data_single, opt)
 
@@ -71,12 +71,12 @@ ŷ_PM = (model_PM_adam(X_test)[:].*s1).+m1
 
 
 # Visualization
-plot(epochs, loss_on_train_PM_adam, lab="Training", c=:blue, lw=2, ylims = (0,2));
-plot!(epochs, loss_on_test_PM_adam, lab="Test", c=:green, lw=2, ylims = (0,2));
+plot(epochs, loss_on_train_PM_adam, lab="Training", c=:blue, lw=2, ylims = (0,6));
+plot!(epochs, loss_on_test_PM_adam, lab="Test", c=:green, lw=2, ylims = (0,6));
 title!("Recurrent parametric machine architecture");
 yaxis!("Loss");
 xaxis!("Training epoch");
-savefig("recurrentPM_loss_adam.png");
+savefig("recurrentPM_loss_adam.pdf");
 
 
 
@@ -85,11 +85,12 @@ savefig("recurrentPM_loss_adam.png");
 #plotting y predicted vs y true standaridized
 plot( y_st , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM_st ,alpha = 0.4, lab= "ŷ PM", lw=2) 
-plot!( ŷ_CNN_st , alpha = 0.4, lab= "ŷ CNN", lw=2)
+plot!( ŷ_CNN_st , alpha = 0.4, lab= "ŷ CNN 1", lw=2)
+plot!( ŷ_CNN_2 , alpha = 0.4, lab= "ŷ CNN 2", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
-savefig("energy_forecast_st.png");
+savefig("energy_forecast_st.pdf");
 
 
 
@@ -97,14 +98,9 @@ savefig("energy_forecast_st.png");
 plot( y , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM ,alpha = 0.4, lab= "ŷ PM", lw=2) 
 plot!( ŷ_CNN, alpha = 0.4, lab= "ŷ CNN", lw=2)
+plot!( ŷ_CNN_2 , alpha = 0.4, lab= "ŷ CNN", lw=2)
 title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
-savefig("energy_forecast.png");
+savefig("energy_forecast.pdf");
 
-
-maximum(ŷ_RNN )
-minimum(ŷ_RNN)
-
-maximum(ŷ_PM )
-minimum(ŷ_PM)

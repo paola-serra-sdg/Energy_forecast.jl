@@ -17,8 +17,9 @@ error_test_PM = Array{Any}(undef, numfiles)
 error_test_CNN = Array{Any}(undef, numfiles)
 #error test with one user trained
 for i in 1:numfiles
-    error_test_PM[i] = Flux.Losses.mae( ŷ_PM_multi[i] , y_multi[i] )
-    error_test_CNN[i] = Flux.Losses.mae( ŷ_CNN_multi[i] , y_multi[i] )
+    #error_test_PM[i] = Flux.Losses.mae( ŷ_PM_multi[i] , y_multi[i] )
+    #error_test_CNN[i] = Flux.Losses.mae( model_CNN_adam(X_) , model_CNN_adam[i] )
+    error_test_CNN[i] = Flux.Losses.mae( model_CNN_adam(X_) , y )
 end
 
 #plotting error_test (the first one is the one used for training)
@@ -35,6 +36,17 @@ title!("Error on test PM vs CNN");
 yaxis!("error");
 xaxis!("user");
 savefig("error_test_1user.png");
+
+
+p = Vector{Any}(undef, numfiles)
+for i in 1:2
+    p[i] = plot( y_test[i][:], alpha = 0.4,  lab= y ,lw=2)
+    #plot( , alpha = 0.4,  lab= y ,lw=2)
+    title!(string("Predicted vs true - ",user[i]));
+    display(p[i])
+    sleep(1)
+    savefig(string(user[i],"_adam.pdf"))
+end
 
 
 

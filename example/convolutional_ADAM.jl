@@ -25,7 +25,7 @@ loss_on_test_adam = Float64[]
 best_params_CNN_adam = Float32[]
 
 
-for epoch in 1:10
+for epoch in 1:100
     Flux.train!(loss, params_CNN_adam, train_data_single, optimiser)
     push!(epochs, epoch)
     push!(loss_on_train_adam, loss(X_train, Y_train))
@@ -60,7 +60,7 @@ plot!(epochs, loss_on_test_adam, lab="Test", c=:red, lw=2);
 title!("Convolutional architecture with ADAM optimizer");
 yaxis!("Loss");
 xaxis!("Training epoch");
-savefig("convolutional_loss_ADAM");
+savefig("convolutional_loss_ADAM.pdf");
 
 plot( y , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_CNN ,alpha = 0.4, lab= "ŷ CNN", lw=2) 
