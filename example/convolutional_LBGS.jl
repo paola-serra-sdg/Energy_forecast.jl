@@ -21,7 +21,7 @@ best_params_CNN_lbfgs = Float32[]
 loss() = Flux.Losses.mse(model_CNN_lbfgs(X_train), Y_train);
 
 lossfun, gradfun, fg!, p0 = optfuns(loss, params_CNN_lbfgs)
-res_CNN= Optim.optimize(Optim.only_fg!(fg!), p0,Optim.Options(iterations=1000, store_trace=true))
+res_CNN= Optim.optimize(Optim.only_fg!(fg!), p0,Optim.Options(iterations=10, store_trace=true))
 best_params_CNN_lbfgs = res_CNN.minimizer
 
 

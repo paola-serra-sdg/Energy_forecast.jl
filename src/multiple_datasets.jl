@@ -1,6 +1,4 @@
-#WORKING IN PROGESS
-#do not check thic code
-#read all files
+
 
 
 numfiles = 254
@@ -88,138 +86,91 @@ for i in 1:numfiles
 end
 
 for i in 1:numfiles
+    x_test[i] = df_st[i][train_range,:,:]
     y_test[i] = df_st[i][test_range,:,:]
-    println("y_test of ",i," done")
+    mean_df[i] = mean(df_new[i])
+    st_df[i] = std(df_new[i])
+    println("test of ",i," done")
 end
 
 
+
+ŷ_PM_multi_st= Vector{Any}(undef, numfiles)
+ŷ_CNN_multi_st = Vector{Any}(undef, numfiles)
+y_multi_st = Vector{Any}(undef, numfiles)
+ŷ_CNN2_multi_st = Vector{Any}(undef, numfiles)
+
+for i in 1:numfiles
+    ŷ_PM_multi_st[i] = (model_PM_adam(x_test[i])[end-671:end])
+    ŷ_CNN_multi_st[i] = (model_CNN_adam(x_test[i])[end-671:end])
+    y_multi_st[i] = y_test[i][end-671:end]
+    ŷ_CNN2_multi_st = (model_CNN_param_adj(x_test[i])[end-671:end])
+end
+
+ŷ_PM_multi_lbfgs_st = Vector{Any}(undef, numfiles)
+ŷ_CNN_multi_lbfgs_st = Vector{Any}(undef, numfiles)
+y_multi_lbfgs_st = Vector{Any}(undef, numfiles)
+ŷ_CNN2_multi_lbfgs_st = Vector{Any}(undef, numfiles)
+
+
+
+
+
+
+
+
+
+## plot
 ŷ_PM_multi = Vector{Any}(undef, numfiles)
 ŷ_CNN_multi = Vector{Any}(undef, numfiles)
 y_multi = Vector{Any}(undef, numfiles)
+ŷ_CNN2_multi = Vector{Any}(undef, numfiles)
 
 for i in 1:numfiles
-    ŷ_PM_multi[i] = model_PM_adam(y_test[i])[:]
-    ŷ_CNN_multi[i] = model_CNN_adam(y_test[i])[:]
-    y_multi[i] = y_test[i][:] #ground truth
+    ŷ_PM_multi[i] = ((model_PM_adam(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
+    ŷ_CNN_multi[i] = ((model_CNN_adam(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
+    y_multi[i] = (y_test[i][end-671:end].*st_df[i]).+mean_df[i]
+    ŷ_CNN2_multi = ((model_CNN_param_adj(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
 end
 
 
 
+p = Vector{Any}(undef, numfiles)
+for i in 1:numfiles
+    p[i] = plot( y_test[i] alpha = 0.4,  lab= y ,lw=2)
+    plot!( ŷ_PM_multi[i],alpha = 0.4, lab= "ŷ PM", lw=2) 
+    plot!( ŷ_CNN_multi[i], alpha = 0.4, lab= "ŷ CNN", lw=2)
+    plot!( ŷ_CNN2_multi[i] , alpha = 0.4, lab= "ŷ CNN 2", lw=2)
+    title!(string("Predicted vs true - ",user[i]));
+    display(p[i])
+    sleep(1)
+    savefig(string(user[i],"_adam.pdf"))
+end
 
 
 
-##training for each Users
-N = 24 * 4
-model_CNN_multi = Vector{Any}(undef, numfiles)
-params_CNN_multiple = Vector{Any}(undef, numfiles)
-
+ŷ_PM_multi_lbfgs = Vector{Any}(undef, numfiles)
+ŷ_CNN_multi_lbfgs = Vector{Any}(undef, numfiles)
+y_multi_lbfgs = Vector{Any}(undef, numfiles)
+ŷ_CNN2_multi_lbfgs = Vector{Any}(undef, numfiles)
 
 
 for i in 1:numfiles
-    model_CNN_multi[i] = Chain(Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0),sigmoid),
-                            Conv((N,),1 => 1, pad = (N-1,0)),
-                            Conv((N,),1 => 1, pad = (N-1,0)),
-                            Conv((N,),1 => 1, pad = (N-1,0)),
-                            Conv((N,),1 => 1, pad = (N-1,0)),
-                            Conv((N,),1 => 1, pad = (N-1,0)))    |> f64;
-                            #Dense(32925, 672)) 
-
-    params_CNN_multiple[i] = Flux.params(model_CNN_multi[i]);
-end
-
-losses = Vector{Any}(undef, numfiles)
-
-losses = (x, y) -> Flux.Losses.mse(model_CNN_multi[i](x), y)
-
-optimiser = ADAM(0.01);
-
-
-loss_multi(i,x,y) = Flux.Losses.mse(model_CNN_multi[i](x), y)
-
-
-
-
-#for loop questo
-epochs = Int64
-epochs = 200
-loss_on_train = Array{Float64}(undef, numfiles, epochs)
-loss_on_test = Array{Float64}(undef, numfiles, epochs)
-best_params_CNN_multi = Vector{Any}(undef, numfiles)
-
-loss_on_train[1,2]
-
-
-for i in 1:numfiles 
-    for epoch in 1:100
-        Flux.train!(Flux.Losses.mse(model_CNN_multi[i](x), y), params_CNN_multiple[i],train_data[i], optimiser) 
-        end
-    end
+    ŷ_PM_multi_lbfgs[i] = ((model_PM_lbfgs(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
+    ŷ_CNN_multi_lbfgs[i] = ((model_CNN_lbfgs(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
+    y_multi_lbfgs[i] = (y_test[i].*st_df[i]).+mean_df[i]
+    ŷ_CNN2_multi_lbfgs[i] = ((model_CNN2_lbfgs(x_test[i])[end-671:end]).*st_df[i]).+mean_df[i]
 end
 
 
-for i in 1:numfiles 
-    println("user ",i, " has started the training")
-    for epoch in 1:2
-        println("enter in epoch")
-       # Flux.train!(loss_multi, params_CNN_multiple[i], train_data[i], optimiser)
-        
-    end
-end
-epochs = 
-v_epochs = Int64[]
-for epoch in 1:200
-    push!(v_epochs, epoch)
-end
-
-
-for i in 1:numfiles 
-    println("user ",i, " has started the training")
-    
-    for epoch in 1:200
-        println("enter in epoch")
-        Flux.train!((x, y) -> Flux.Losses.mse(model_CNN_multi[i](x), y), params_CNN_multiple[i], train_data[i], optimiser)
-        println("training")
-        #push!(epochs, epoch)
-        #loss_on_train[i][epoch], loss_multi(i,x_train[i], y_train[i]))
-       # push!(loss_on_test[i][epoch],  loss_multi(i,x_test[i], y_test[i]))
-
-        @show epoch
-        @show loss_multi(i,x_train[i], y_train[i])
-        @show loss_multi(i,x_test[i], y_test[i])
-
-        if epoch > 1
-            if is_best(loss_on_test[i,epoch-1], loss_on_test[i,epoch])
-                best_params_CNN_multi[i] = params_CNN_multiple[i]
-            end
-        end
-     end
-    println("user ",i, "has finished the training")
-    #i = i+1
-    println("user ",i, "will start the training")
-end
-
+p_lbfgs = Vector{Any}(undef, numfiles)
 for i in 1:numfiles
-# Extract and add new trained parameters
-    if isempty(best_params_CNN_multi[i])
-        best_params_CNN_multi[i] = params_CNN_multiple[i]
-    end
-
-    Flux.loadparams!(model_CNN[i], best_params_CNN_multi[i]);
+    p_lbfgs[i] = plot( y_multi_lbfgs[i], alpha = 0.4,  lab= "y" ,lw=2)
+    plot!( ŷ_PM_multi_lbfgs[i] ,alpha = 0.4, lab= "ŷ PM", lw=2) 
+    plot!( ŷ_CNN_multi_lbfgs[i], alpha = 0.4, lab= "ŷ CNN", lw=2)
+    plot!( ŷ_CNN2_multi_lbfgs[i] , alpha = 0.4, lab= "ŷ CNN 2", lw=2)
+    title!(string("Predicted vs true - ",user[i]));
+    display(p[i])
+    sleep(1)
+    savefig(string(user[i],"_lbfgs.pdf"))
 end
-
-
-    plot(v_epochs, loss_on_train[20,:], lab="Training", c=:blue, lw=2);
-    plot!(v_epochs, loss_on_test[20,:], lab="Test", c=:red, lw=2);
-    title!("Recurrent architecture");
-    yaxis!("Loss");
-    xaxis!("Training epoch");
-    savefig("r");
-
-savefig("recurrent_loss");

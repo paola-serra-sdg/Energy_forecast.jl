@@ -54,8 +54,8 @@ ŷ_CNN_2_st = model_CNN_param_adj(X_test)[:]
 
 
 # Visualization
-plot(epochs, loss_on_train_CNN_param_adj, lab="Training", c=:blue, lw=2);
-plot!(epochs, loss_on_test_CNN_param_adj, lab="Test", c=:red, lw=2);
+plot(epochs, loss_on_train_CNN_param_adj, lab="Training", c=:blue, lw=2, ylims = (0,6));
+plot!(epochs, loss_on_test_CNN_param_adj, lab="Test", c=:red, lw=2, ylims = (0,6));
 title!("Convolutional architecture with ADAM optimizer");
 yaxis!("Loss");
 xaxis!("Training epoch");

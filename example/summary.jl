@@ -5,16 +5,31 @@ using PyPlot
 using TimeSeries
 using StatsPlots
 
+
+#summary statistics for trained user
 dataf1 = Pandas.DataFrame(df_single)
 d = Pandas.describe(dataf1)
 d
+
+
+
+#summary statistic for all users
+dframe = Array{Any}(undef, numfiles)
+d = Array{Any}(undef, numfiles)
+for i in 1:numfiles 
+    dframe[i] = Pandas.DataFrame(df[i])
+    d[i] = Pandas.describe(dframe[i])   
+end
+
+
 
 timestamp = convert(Array{DateTime},timestamp)
 
 
 Plots.PlotlyJSBackend()
 #plot active power demand for  1st user 
-savefig( = PlotlyJS.plot(
+
+PlotlyJS.plot(
     timestamp, df_single,alpha = 0.4,lw = 10,
     Layout(
         title="Active Power Demand for user 1358568",
@@ -31,11 +46,11 @@ savefig( = PlotlyJS.plot(
             )
         )
     )
-),"test.png")
+)
 
 
-savefig(
-    p::timeseries_plot, fn::timeseries;)
+
+
 
 
 #to be continued
@@ -44,10 +59,10 @@ savefig(
 using Plots
 
 
-trace1 = PlotlyJS.box(;y = st_)
+trace1 = PlotlyJS.box(;y = df[9], name = "1352954")
 PlotlyJS.plot(trace1,
     Layout(
-        title="Box Plot with Range Slider and Selectors",
+        title="Box Plot for user 1352954",
         xaxis=attr(
             rangeslider_visible=true)
 ))
@@ -61,9 +76,9 @@ end
 
 
 data = GenericTrace[]
-for i in 1:50
+for i in 1:7
     trace = PlotlyJS.box(;y= df[i],
-                 name=user[i])
+                 name=files[i][end-11:end-5] )
     push!(data, trace)
 end
 

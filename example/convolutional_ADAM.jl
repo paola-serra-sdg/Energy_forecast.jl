@@ -55,8 +55,8 @@ ŷ_CNN_st = model_CNN_adam(X_test)[:]
 
 
 # Visualization
-plot(epochs, loss_on_train_adam, lab="Training", c=:blue, lw=2);
-plot!(epochs, loss_on_test_adam, lab="Test", c=:red, lw=2);
+plot(epochs, loss_on_train_adam, lab="Training", c=:blue, lw=2, ylims = (0,6));
+plot!(epochs, loss_on_test_adam, lab="Test", c=:red, lw=2, ylims = (0,6));
 title!("Convolutional architecture with ADAM optimizer");
 yaxis!("Loss");
 xaxis!("Training epoch");
