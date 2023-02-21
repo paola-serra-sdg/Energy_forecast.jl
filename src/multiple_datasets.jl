@@ -123,12 +123,12 @@ end
 
 
 p = Vector{Any}(undef, numfiles)
-for i in 1:2
-    p[i] = plot( y_multi[i][:] ,alpha = 0.4,  lab= y ,lw=2)
-    plot!( ŷ_PM_multi[i],alpha = 0.4, lab= "ŷ PM", lw=2) 
-    plot!( ŷ_CNN_multi[i], alpha = 0.4, lab= "ŷ CNN", lw=2)
-    plot!( ŷ_CNN2_multi[i], alpha = 0.4, lab= "ŷ CNN 2", lw=2)
-    title!(string("Predicted vs true - ",user[i]));
+for i in 1:numfiles
+    p[i] = plot( y_multi[i][:] , legend=false,alpha = 0.4,  lab= y ,lw=2)
+    plot!( ŷ_PM_multi[i], legend=false, alpha = 0.4, lab= "ŷ PM", lw=2) 
+    plot!( ŷ_CNN_multi[i],legend=false, alpha = 0.4, lab= "ŷ CNN", lw=2)
+    plot!( ŷ_CNN2_multi[i],legend=false, alpha = 0.4, lab= "ŷ CNN 2", lw=2)
+    #title!(string("Predicted vs true - ",user[i]));
     display(p[i])
     sleep(1)
     savefig(string(user[i],"_adam.pdf"))
@@ -152,12 +152,12 @@ end
 
 
 p_lbfgs = Vector{Any}(undef, numfiles)
-for i in 1:2
-    p_lbfgs[i] = plot( y_multi_lbfgs[i][:], alpha = 0.4,  lab= "y" ,lw=2)
-    plot!( ŷ_PM_multi_lbfgs[i] ,alpha = 0.4, lab= "ŷ PM", lw=2) 
-    plot!( ŷ_CNN_multi_lbfgs[i], alpha = 0.4, lab= "ŷ CNN", lw=2)
-    plot!( ŷ_CNN2_multi_lbfgs[i] , alpha = 0.4, lab= "ŷ CNN 2", lw=2)
-    title!(string("Predicted vs true - ",user[i]));
+for i in 1:numfiles
+    p_lbfgs[i] = plot( y_multi_lbfgs[i][:],legend=false, alpha = 0.4,  lab= "y" ,lw=2)
+    plot!( ŷ_PM_multi_lbfgs[i] ,legend=false,alpha = 0.4, lab= "ŷ PM", lw=2) 
+    plot!( ŷ_CNN_multi_lbfgs[i], legend=false,alpha = 0.4, lab= "ŷ CNN", lw=2)
+    plot!( ŷ_CNN2_multi_lbfgs[i] ,legend=false, alpha = 0.4, lab= "ŷ CNN 2", lw=2)
+    #title!(string("Predicted vs true - ",user[i]));
     display(p_lbfgs[i])
     sleep(1)
     savefig(string(user[i],"_lbfgs.pdf"))

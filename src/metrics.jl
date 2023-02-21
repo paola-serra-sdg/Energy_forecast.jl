@@ -68,9 +68,9 @@ for i in 1:numfiles
     MSE_test_CNN_2_lbfgs[i] = Flux.Losses.mse( ŷ_CNN2_multi_lbfgs_st[i]  , y_multi_st[i] )
 end
 
-Plots.histogram(MSE_test_PM_lbfgs,alpha = 0.4, label="PM",bins=:sqrt, normalize=:pdf, color=:green)
-Plots.histogram!(MSE_test_CNN_lbfgs, alpha = 0.4, label="CNN", bins=:sqrt,normalize=:pdf, color=:pink)
-Plots.histogram!(MSE_test_CNN_2_lbfgs, alpha = 0.4, label="CNN2", bins=20, normalize=:pdf, color=:blue)
+Plots.histogram(MSE_test_PM_lbfgs,legend=false, alpha = 0.4,bins=20, normalize=:pdf, color=:green)
+Plots.histogram!(MSE_test_CNN_lbfgs, legend=false, alpha = 0.4,bins=:sqrt,normalize=:pdf, color=:pink)
+Plots.histogram!(MSE_test_CNN_2_lbfgs,legend=false, alpha = 0.4,  bins=20, normalize=:pdf, color=:blue)
 savefig("MSE_lbfgs.pdf")
 
 ###MAE
@@ -87,9 +87,9 @@ end
 
 MAE_ADAM = Pandas.DataFrame(MAE_test_CNN)
 
-Plots.histogram(MAE_test_PM, alpha = 0.4,label="PM", normalize=:pdf, color=:green)
-Plots.histogram!(MAE_test_CNN,alpha = 0.4, label="CNN", normalize=:pdf, color=:pink)
-Plots.histogram!(MAE_test_CNN_2, alpha = 0.4,label="CNN2", normalize=:pdf, color=:blue)
+Plots.histogram(MAE_test_PM,legend=false, alpha = 0.4,normalize=:pdf, color=:green)
+Plots.histogram!(MAE_test_CNN,legend=false, alpha = 0.4, normalize=:pdf, color=:pink)
+Plots.histogram!(MAE_test_CNN_2, legend=false, alpha = 0.4, normalize=:pdf, color=:blue)
 savefig("Mae_adam.pdf")
 
 
@@ -105,9 +105,9 @@ for i in 1:numfiles
     MAE_test_CNN_2_lbfgs[i] = Flux.Losses.mae( ŷ_CNN2_multi_lbfgs_st[i]  , y_multi_st[i] )
 end
 
-Plots.histogram(MAE_test_PM_lbfgs,alpha = 0.4, label="PM",bins=:sqrt, normalize=:pdf, color=:green)
-Plots.histogram!(MAE_test_CNN_lbfgs, alpha = 0.4, label="CNN", bins=:sqrt,normalize=:pdf, color=:pink)
-Plots.histogram!(MAE_test_CNN_2_lbfgs, alpha = 0.4, label="CNN2", bins=:sqrt, normalize=:pdf, color=:blue)
+Plots.histogram(MAE_test_PM_lbfgs,legend=false, alpha = 0.4,bins=:sqrt, normalize=:pdf, color=:green)
+Plots.histogram!(MAE_test_CNN_lbfgs, legend=false, alpha = 0.4, bins=:sqrt,normalize=:pdf, color=:pink)
+Plots.histogram!(MAE_test_CNN_2_lbfgs, legend=false, alpha = 0.4, bins=:sqrt, normalize=:pdf, color=:blue)
 savefig("Mae_lbfgs.pdf")
 
 

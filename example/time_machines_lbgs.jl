@@ -46,7 +46,7 @@ plot( y , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM_lbfgs ,alpha = 0.4, lab= "ŷ PM", lw=2) 
 plot!( ŷ_CNN_lbfgs, alpha = 0.4, lab= "ŷ CNN", lw=2)
 plot!( ŷ_CNN2_lbfgs, alpha = 0.4, lab= "ŷ CNN 2", lw=2)
-title!("Predicted vs True");
+#title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
 savefig("energy_forecast_lfbgs.pdf");

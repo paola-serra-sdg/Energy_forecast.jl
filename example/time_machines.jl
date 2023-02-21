@@ -87,7 +87,7 @@ plot( y_st , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM_st ,alpha = 0.4, lab= "ŷ PM", lw=2) 
 plot!( ŷ_CNN_st , alpha = 0.4, lab= "ŷ CNN 1", lw=2)
 plot!( ŷ_CNN_2 , alpha = 0.4, lab= "ŷ CNN 2", lw=2)
-title!("Predicted vs True");
+#title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
 savefig("energy_forecast_st.pdf");
@@ -99,7 +99,7 @@ plot( y , alpha = 0.4,  lab= "y",lw=2)
 plot!( ŷ_PM ,alpha = 0.4, lab= "ŷ PM", lw=2) 
 plot!( ŷ_CNN, alpha = 0.4, lab= "ŷ CNN", lw=2)
 plot!( ŷ_CNN_2 , alpha = 0.4, lab= "ŷ CNN", lw=2)
-title!("Predicted vs True");
+#title!("Predicted vs True");
 yaxis!("Energy demand");
 xaxis!("Time");
 savefig("energy_forecast.pdf");
