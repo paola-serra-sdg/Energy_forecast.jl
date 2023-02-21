@@ -46,7 +46,7 @@ week_length = 4 * 24 * 7
 start_week_prediction = week * week_length  #44*672
 end_week_prediction = start_week_prediction + week_length 
 train_range = 1:start_week_prediction  # arriva asll'inizio 44 esima settimana
-test_range= start_week_prediction+1 : end_week_prediction
+test_range= start_week_prediction+1:end_week_prediction
 
 672*52
 
@@ -63,8 +63,8 @@ Y_train = st[673:end,:,:]
 # X_train = X[1:start_week_prediction,:,:]# inizio 43
 # Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
 
-X_test = X_train[test_range,:,:] #43
-Y_test = Y_train[test_range,:,:] #44
+X_test = X_train[test_range,:,:] 
+Y_test = Y_train[test_range,:,:]
 #IL TEST
 
 

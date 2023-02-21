@@ -2,7 +2,9 @@ using ParametricMachinesDemos
 using FluxOptTools
 using Optim
 
-#da sistemare
+
+
+Random.seed!(25)
 dimensions = [1, 4 , 4 , 4];#, 16, 32];
 
 
@@ -25,7 +27,7 @@ params_PM_lbfgs = Flux.params(model_PM_lbfgs);
 loss() = Flux.Losses.mse(model_PM_lbfgs(X_train), Y_train);
 
 lossfun, gradfun, fg!, p0 = optfuns(loss, params_PM_lbfgs)
-res_PM_lbfgs = Optim.optimize(Optim.only_fg!(fg!), p0, Optim.Options(iterations=100, store_trace=true))
+res_PM_lbfgs = Optim.optimize(Optim.only_fg!(fg!), p0, Optim.Options(iterations=10, store_trace=true))
 best_params_PM_lbfgs  = res_PM_lbfgs.minimizer
 
 

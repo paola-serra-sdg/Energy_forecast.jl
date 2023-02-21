@@ -2,6 +2,7 @@
 using FluxOptTools
 using Optim
 
+Random.seed!(25)
 N = 24 * 4
 model_CNN_lbfgs = Chain(Conv((N,),1 => 4, pad = (N-1,0),sigmoid),
                 Conv((N,),4 => 4, pad = (N-1,0),sigmoid),
@@ -12,7 +13,7 @@ model_CNN_lbfgs = Chain(Conv((N,),1 => 4, pad = (N-1,0),sigmoid),
             
 
 
-optimiser = ADAM(0.01);
+optimiser = ADAM(0.05);
 
 params_CNN_lbfgs = Flux.params(model_CNN_lbfgs);
 

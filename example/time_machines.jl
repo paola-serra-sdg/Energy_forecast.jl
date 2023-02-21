@@ -12,7 +12,7 @@ using ParametricMachinesDemos
 
 #data = DataLoader((X, Y) ; batchsize = 1)
 
-
+Random.seed!(125)
 dimensions = [1, 4 , 4 , 4];#, 16, 32];
 
 
@@ -22,7 +22,7 @@ model_PM_adam = Flux.Chain(machine, Conv((1,), sum(dimensions) => 1)) |> f64
 
 params_PM_adam = Flux.params(model_PM_adam);
 
-opt = ADAM(0.01);
+opt = ADAM(0.05);
 
 #best_paras = best_parameters( "LBFGS",model,2, X, Y, X_test,Y_test)
 
