@@ -35,7 +35,9 @@ function standardize(data::Array)
     st_x = (data.-m)./s
     return st_x
 end
-m1 = mean(df_single[train_range])
+m1 = mean(df_single)
+mean(df_single[train_range])  #3.82
+m_test =  mean(df_single[test_range])  #3.38
 s1 = std(df_single)
 st = standardize(df_single)
 
@@ -43,7 +45,7 @@ st = standardize(df_single)
 #splitting train and test
 week = 43
 week_length = 4 * 24 * 7
-start_week_prediction = week * week_length  #44*672
+start_week_prediction = week * week_length  #43*672
 end_week_prediction = start_week_prediction + week_length 
 train_range = 1:start_week_prediction  # arriva asll'inizio 44 esima settimana
 test_range= start_week_prediction+1:end_week_prediction
@@ -52,21 +54,26 @@ test_range= start_week_prediction+1:end_week_prediction
 
 #splitting in train and test
 
-X_train = st[1:end-672,:,:]
-Y_train = st[673:end,:,:]
+#X_train = st[1:end-672,:,:]
+#Y_train = st[673:end,:,:]
 
 #X_test = X_train[end-671:end,:,:]
 #_test = Y_train[end-671:end,:,:]
-# X = st[1:end-week_length,:,:]  
-# Y = st[week_length+1:end,:,:]
+X = st[1:end-week_length,:,:]  
+Y = st[week_length+1:end,:,:]
+
+ X_train = X[1:start_week_prediction,:,:]# inizio 43
+ Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
+
+X_test = X[test_range,:,:] 
+Y_test = Y[test_range,:,:]
+#IL TEST
 
 # X_train = X[1:start_week_prediction,:,:]# inizio 43
 # Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
 
-X_test = X_train[test_range,:,:] 
-Y_test = Y_train[test_range,:,:]
-#IL TEST
-
+# X_train = X[1:start_week_prediction,:,:]# inizio 43
+# Y_train = Y[1:start_week_prediction,:,:]# 43 inclusa
 
 
 # X = st[train_range,:,:]
@@ -81,5 +88,5 @@ test_data_single = DataLoader((X_test, Y_test); batchsize = 1)
 
 
 #Y ground truth for week 44
-y_st = Y_train[test_range]
+y_st = Y[test_range]
 y = (y_st.*s1).+m1
