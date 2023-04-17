@@ -1,4 +1,4 @@
-# Energy_forecast
+# Energy forecast
 
 [![Build Status](https://github.com/paola-serra-sdg/Energy_forecast.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/paola-serra-sdg/Energy_forecast.jl/actions/workflows/CI.yml?query=branch%3Amaster)
 
@@ -30,6 +30,7 @@ The model is trained using data up to the end of the 43rd week and then evaluate
 After experimenting with various combinations of dimensions, we determine that dividing the space into four subspaces, each with a depth of four and one with a depth of one, yielded the best results. This approach results in a total of 13 subspaces. We utilize a time block of two days. Additionally, to ensure the preservation of a full day, we incorporate a padding value of 96, which corresponds to 24 hours with 4 observations every hour. For nonlinearity, we implement the sigmoid function. The model also includes a convolutional layer with a kernel size of one, which accepts 13 channels as inputs representing the subspaces, and generates a single output channel.
 
 **CNN-1**
+
 The second model we have defined is a CNN consisting of 4 convolutional layers (CNN-1). The architecture is composed of a sequence of convolutional layers that are connected in a sequential manner without any shortcuts.
 We carefully selected the architecture of the convolutional model to resemble the structure of the time machine so that a fair comparison could be made between the two models.
 The convolutional neural network utilized for this task is a one-dimensional CNN, as the input data consists of time series.
@@ -38,6 +39,7 @@ We chose a one-day filter as kernel, which consists of 24 hours with four observ
 Regarding the padding setting, we added 95 zero-values to the left side (representing the past) of the input data, and zero-values to the right side (representing the future).
 
 **CNN-2**
+
 To make the number of parameters comparable, we attempted to increase the number of parameters in the CNN. In the second architecture version of the CNN (CNN-2), which still contains four convolutional layers, we arrange the layers hyperparameters in order to have a comparable number of model parameters with the time machine. We retain all other settings from the first convolutional model.
 This change results in a total of 16923 parameters, allowing us to make a fair comparison.
 
