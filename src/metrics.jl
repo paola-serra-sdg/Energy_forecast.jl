@@ -3,37 +3,6 @@ function is_best(old_loss, new_loss)
 end
 
 
-#ADAM
-# MSE test error on user trained
-error_test_PM_adam  = Flux.Losses.mse( ŷ_PM_st , y_st )
-error_test_CNN_adam= Flux.Losses.mse( ŷ_CNN_st , y_st )
-error_test_CNN2_adam = Flux.Losses.mse( ŷ_CNN_2_st , y_st )
-
-#MAE 
-error_test_PM_adam_mae  = Flux.Losses.mae( ŷ_PM_st , y_st )
-error_test_CNN_adam_mae= Flux.Losses.mae( ŷ_CNN_st , y_st )
-error_test_CNN2_adam_mae = Flux.Losses.mae( ŷ_CNN_2_st , y_st )
-
-
-
-
-
-
-# MSE test error on user trained
-error_test_PM_lbfgs  = Flux.Losses.mse( ŷ_PM_lbfgs_st , y_st )
-error_test_CNN_lbfgs= Flux.Losses.mse( ŷ_CNN_lbfgs_st , y_st )
-error_test_CNN2_lbfgs = Flux.Losses.mse( ŷ_CNN2_lbfgs_st , y_st )
-
-#MAE 
-error_test_PM_lbfgs_mae  = Flux.Losses.mae( ŷ_PM_lbfgs_st , y_st )
-error_test_CNN_lbfgs_mae= Flux.Losses.mae( ŷ_CNN_lbfgs_st , y_st )
-error_test_CNN2_lbfgs_mae = Flux.Losses.mae( ŷ_CNN2_lbfgs_st , y_st )
-
-
-
-
-
-
 
 #MSE DISTRIBUTION
 
